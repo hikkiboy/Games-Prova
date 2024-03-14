@@ -4,7 +4,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float velocity;
-    [SerializeField] private float jumpForce = 300;
+    [SerializeField] private float jumpForce = 5;
     [SerializeField] private int lives;
 
     private Rigidbody2D rigidbody;
@@ -24,7 +24,7 @@ public class PlayerController : MonoBehaviour
         SetupInputListeners();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         Move();
         FlipSpriteAccordingToMoveDirection();
@@ -34,10 +34,10 @@ public class PlayerController : MonoBehaviour
     {
         moveDirection =
             GameManager.Instance.inputManager.MoveDirection;
-        float fixedMoveDirection = moveDirection *
-                                   velocity *
-                                   Time.deltaTime;
-        transform.Translate(fixedMoveDirection, 0, 0);
+
+        rigidbody.velocity = 
+            new Vector2(moveDirection * velocity, 
+                          rigidbody.velocity.y);
     }
 
     private void FlipSpriteAccordingToMoveDirection()
@@ -54,6 +54,8 @@ public class PlayerController : MonoBehaviour
 
     private void HandleAttack()
     {
+        if (canJump == false) return;
+        
         print("Estou atacando");
     }
 
@@ -61,7 +63,7 @@ public class PlayerController : MonoBehaviour
     {
         if (canJump)
         {
-            rigidbody.AddForce(Vector2.up * jumpForce);
+            rigidbody.velocity += Vector2.up * jumpForce;
             canJump = false;
         }
     }

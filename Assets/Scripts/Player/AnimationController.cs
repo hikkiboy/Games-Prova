@@ -52,6 +52,7 @@ public class AnimationController : MonoBehaviour
 
     private void HandleAttackAnim()
     {
+        if (playerController.GetCanJump() == false) return;
         animator.SetTrigger("attack");
     }
 
