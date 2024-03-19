@@ -56,6 +56,11 @@ public class AnimationController : MonoBehaviour
         animator.SetTrigger("attack");
     }
 
+    public Animator GetAnimator()
+    {
+        return animator;
+    }
+
     private void OnDestroy()
     {
         GameManager.Instance.inputManager.OnAttack -= HandleAttackAnim;

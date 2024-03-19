@@ -1,11 +1,15 @@
 using System;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : Damageable
 {
+    [Header("Movement properties")]
     [SerializeField] private float velocity;
     [SerializeField] private float jumpForce = 5;
-    [SerializeField] private int lives;
+    [Header("Attack properties")]
+    [SerializeField] private Transform attackPoint;
+    [SerializeField] private float attackRange;
+    [SerializeField] private LayerMask attackLayer;
 
     private Rigidbody2D rigidbody;
     private SpriteRenderer spriteRenderer;
@@ -55,8 +59,22 @@ public class PlayerController : MonoBehaviour
     private void HandleAttack()
     {
         if (canJump == false) return;
-        
-        print("Estou atacando");
+        Collider2D[] hittedObjects =
+            Physics2D.OverlapCircleAll(attackPoint.position, attackRange, attackLayer);
+
+        foreach (Collider2D collider in hittedObjects)
+        {
+            if (collider.TryGetComponent(out Damageable hit))
+            {
+                hit.TakeDamage();
+            }
+        }
+    }
+
+    public override void TakeDamage()
+    {
+        GetComponent<AnimationController>().GetAnimator().SetTrigger("hurt");
+        lives--;
     }
 
     private void HandleJump()
@@ -76,20 +94,24 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void SetupInputListeners()
+    {
+        GameManager.Instance.inputManager.OnJump += HandleJump;
+    }
+    
     public bool GetCanJump()
     {
         return canJump;
     }
 
-    private void SetupInputListeners()
-    {
-        GameManager.Instance.inputManager.OnJump += HandleJump;
-        GameManager.Instance.inputManager.OnAttack += HandleAttack;
-    }
-
-    private void OnDestroy()
+    private void OnDisable()
     {
         GameManager.Instance.inputManager.OnJump -= HandleJump;
-        GameManager.Instance.inputManager.OnAttack -= HandleAttack;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(attackPoint.position, attackRange);
     }
 }
