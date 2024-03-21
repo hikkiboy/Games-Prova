@@ -1,4 +1,5 @@
 using System;
+using Unity.XR.Oculus.Input;
 using UnityEngine;
 
 public class PlayerController : Damageable
@@ -73,8 +74,26 @@ public class PlayerController : Damageable
 
     public override void TakeDamage()
     {
-        GetComponent<AnimationController>().GetAnimator().SetTrigger("hurt");
         lives--;
+        CheckAndHandleLife();
+    }
+
+    private void CheckAndHandleLife()
+    {
+        GameManager.Instance.InvokeOnPlayerGetHurtEvent();
+        Animator animator = GetComponent<Animator>();
+        if (lives <= 0)
+        {
+            animator.SetTrigger("dead"); 
+            GameManager.Instance.inputManager.DisableInput();
+            GameManager.Instance.InvokeOnPlayerDieEvent();
+            rigidbody.bodyType = RigidbodyType2D.Static;
+            GetComponent<BoxCollider2D>().enabled = false;
+        }
+        else
+        {
+            animator.SetTrigger("hurt");
+        }
     }
 
     private void HandleJump()

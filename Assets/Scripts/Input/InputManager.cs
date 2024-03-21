@@ -28,4 +28,9 @@ public class InputManager
     {
         OnJump?.Invoke();
     }
+
+    public void DisableInput()
+    {
+        playercontrols.Gameplay.Disable();
+    }
 }

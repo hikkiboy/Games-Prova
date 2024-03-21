@@ -48,6 +48,7 @@ public class Enemy : Damageable
 
     private void HandleMovementDirectionAndMove()
     {
+        if (canMove == false) return;
         animator.SetBool("isMoving", true);
         if (currentPointToMove == pointRight)
         {
@@ -86,25 +87,32 @@ public class Enemy : Damageable
 
     private void StopCharacter()
     {
-        canMove = false;
+        print("Stopping enemy");
                                //new Vector3(0,0,0)
         rigidbody.velocity = Vector3.zero;
+        canMove = false;
         animator.SetBool("isMoving", false);
     }
     
     public override void TakeDamage()
     {
-        animator.SetTrigger("hurt");
         lives--;
-        CheckAndHandleDeath();
+        CheckAndHandleHealth();
     }
 
-    private void CheckAndHandleDeath()
+    private void CheckAndHandleHealth()
     {
-        if (lives > 0) return;
-        StopCharacter();
-        animator.SetTrigger("die");
-        StartCoroutine(DestroyEnemy(1));
+        if (lives <= 0)
+        {
+            GameManager.Instance.InvokeOnEnemyDieEvent();
+            StopCharacter();
+            animator.SetTrigger("die");
+            StartCoroutine(DestroyEnemy(1));
+        }
+        else
+        {
+            animator.SetTrigger("hurt");
+        }
     }
 
     private IEnumerator DestroyEnemy(float timeToWait)
