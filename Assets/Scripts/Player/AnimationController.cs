@@ -37,17 +37,17 @@ public class AnimationController : MonoBehaviour
     private bool CheckIsMoving()
     {
         //Ao invés de fazermos isso
-        // if (GameManager.Instance.inputManager.MoveDirection != 0)
-        // {
-        //     return true;
-        // }
-        // else
-        // {
-        //     return false;
-        // }
+         if (GameManager.Instance.inputManager.MoveDirection != 0)
+        {
+            return true;
+         }
+         else
+        {
+           return false;
+        }
 
         //Vamos fazer isso
-        return GameManager.Instance.inputManager.MoveDirection != 0;
+        //return GameManager.Instance.inputManager.MoveDirection != 0;
     }
 
     private void HandleAttackAnim()

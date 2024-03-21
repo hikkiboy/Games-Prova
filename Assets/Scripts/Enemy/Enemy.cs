@@ -105,8 +105,8 @@ public class Enemy : Damageable
         if (lives <= 0)
         {
             GameManager.Instance.InvokeOnEnemyDieEvent();
-            StopCharacter();
             animator.SetTrigger("die");
+            StopCharacter();
             StartCoroutine(DestroyEnemy(1));
         }
         else
@@ -118,7 +118,7 @@ public class Enemy : Damageable
     private IEnumerator DestroyEnemy(float timeToWait)
     {
         yield return new WaitForSeconds(timeToWait);
-        Destroy(this.gameObject);
+        Destroy(gameObject);
     }
 
     private void OnCollisionEnter2D(Collision2D collider)

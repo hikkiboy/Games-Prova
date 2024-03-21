@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
 
     public void InvokeOnEnemyDieEvent()
     {
-        inputManager.DisableInput();
+        //inputManager.DisableInput();
         enemiesLeftCount--;
         OnEnemyDie?.Invoke();
         CheckAndHandleEnemiesDead();
